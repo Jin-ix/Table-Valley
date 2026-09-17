@@ -1,0 +1,948 @@
+/* ══════════════════════════════════════
+   STAFF PAGE — CSS MODULE
+══════════════════════════════════════ */
+
+/* ── TABS ── */
+.tabRow {
+  display: flex;
+  gap: 0.375rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 1.75rem;
+  width: fit-content;
+}
+
+.tab {
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab:hover { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.06); }
+
+.tabActive {
+  background: linear-gradient(135deg, #ea580c, #f97316) !important;
+  color: #fff !important;
+  box-shadow: 0 3px 10px rgba(234,88,12,0.3);
+}
+
+.tabBadge {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+/* ── STAFF CARDS GRID ── */
+.staffGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes staffCardEnter {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.95); }
+  65%  { opacity: 1; transform: translateY(-4px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.staffCard {
+  background: var(--glass-1, rgba(255,255,255,0.025));
+  border: 1px solid var(--border-1, rgba(255,255,255,0.07));
+  border-radius: 20px;
+  padding: 1.375rem;
+  transition:
+    transform 0.3s cubic-bezier(0.22,1,0.36,1),
+    box-shadow 0.3s cubic-bezier(0.22,1,0.36,1),
+    background 0.2s,
+    border-color 0.22s;
+  position: relative;
+  overflow: hidden;
+  animation: staffCardEnter 0.55s cubic-bezier(0.22,1,0.36,1) both;
+  will-change: transform;
+}
+
+.staffCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  transition: opacity 0.2s;
+}
+
+.staffCard:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(249,115,22,0.22);
+  transform: translateY(-8px) scale(1.012);
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.15),
+    0 12px 32px rgba(0,0,0,0.35),
+    0 28px 60px rgba(0,0,0,0.3),
+    0 0 0 1px rgba(234,88,12,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.staffCard:hover .staffCardAvatar {
+  transform: scale(1.1) rotate(-4deg);
+  box-shadow: 0 0 18px rgba(234,88,12,0.35);
+}
+
+.staffCardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.staffCardAvatarWrap { display: flex; align-items: center; gap: 0.875rem; }
+
+.staffCardAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(234,88,12,0.15);
+  color: #f97316;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  border: 1px solid rgba(234,88,12,0.25);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s;
+}
+
+.staffCardName { font-size: 0.9375rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.15rem; }
+.staffCardRole { font-size: 0.75rem; color: rgba(255,255,255,0.35); font-weight: 500; }
+
+.staffCardEditBtn {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+}
+.staffCardEditBtn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.18); }
+
+.staffCardStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+
+.staffCardStat {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.staffCardStatLabel { font-size: 0.675rem; color: rgba(255,255,255,0.3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.25rem; }
+.staffCardStatVal   { font-size: 0.9375rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+
+.staffCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.875rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.shiftBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+}
+
+.salaryBadge {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: -0.01em;
+}
+
+/* ── ATTENDANCE ── */
+.attendanceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.weekNav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.weekNavBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.weekNavBtn:hover { background: rgba(234,88,12,0.15); color: #f97316; border-color: rgba(234,88,12,0.2); }
+
+.weekLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 200px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.attendanceTable { width: 100%; border-collapse: collapse; }
+
+.attendanceTable th {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.attendanceTable td {
+  padding: 0.875rem 1rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+
+.attendanceTable tr:last-child td { border-bottom: none; }
+
+.attendanceTable tbody tr:hover td { background: rgba(255,255,255,0.03); }
+
+.dayCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.dayName { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+.dayNum  { font-size: 0.875rem; font-weight: 800; color: #fff; }
+
+.attStatus {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.attPresent  { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.attAbsent   { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.attHalf     { background: rgba(234,88,12,0.12);  color: #fb923c; border: 1px solid rgba(234,88,12,0.2); }
+.attLeave    { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.2); }
+.attHoliday  { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.08); }
+
+/* ── INTERACTIVE CELL BUTTON ── */
+.attCellBtn {
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+  position: relative;
+  padding-right: 1.25rem !important;
+}
+.attCellBtn:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.attEditHint {
+  position: absolute;
+  right: 0.3rem;
+  font-size: 0.55rem;
+  opacity: 0.5;
+  line-height: 1;
+}
+
+/* ── TODAY DOT ── */
+.todayDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f97316;
+  display: inline-block;
+  box-shadow: 0 0 6px rgba(249,115,22,0.6);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* ── TODAY COLUMN HEADER ── */
+.dayNumToday {
+  color: #f97316 !important;
+  background: rgba(234,88,12,0.15);
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+}
+
+.todayLabel {
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #f97316;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.1rem;
+}
+
+/* ── ATTENDANCE POPOVER ── */
+.attPopover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #131c2e;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 0.5rem;
+  min-width: 155px;
+  z-index: 100;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  animation: popIn 0.12s cubic-bezier(0.22,1,0.36,1);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1);    }
+}
+
+.attPopoverTitle {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.5rem 0.5rem;
+}
+
+.attPopoverItem {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.55rem 0.625rem;
+  border-radius: 9px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.12s;
+  text-align: left;
+}
+.attPopoverItem:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.attPopoverItemActive { background: rgba(255,255,255,0.06) !important; color: #fff !important; }
+
+.attPopoverIcon { font-size: 0.875rem; width: 16px; text-align: center; flex-shrink: 0; }
+
+/* ── QUICK MARK TOOLBAR ── */
+.attToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.attToolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.attToolbarLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+  margin-right: 0.25rem;
+}
+
+.attQuickBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.425rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.775rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+.attQuickBtn:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.attToolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex-wrap: wrap;
+}
+
+.attLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+}
+
+.attDotPresent { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #34d399; }
+.attDotAbsent  { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f87171; }
+.attDotHalf    { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #fb923c; }
+.attDotLeave   { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #a78bfa; }
+
+/* ── DAILY SUMMARY BAR (above table) ── */
+.attSummaryRow {
+  display: flex;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 0 0 0 170px; /* offset for name column */
+}
+
+.attSummaryDay {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.625rem 0.5rem;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.attSummaryDay:last-of-type { border-right: none; }
+.attSummaryDayToday { background: rgba(234,88,12,0.06); }
+
+.attSummaryDayName { font-size: 0.625rem; font-weight: 700; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.06em; }
+.attSummaryPresent { font-size: 0.7rem; font-weight: 800; color: #34d399; }
+.attSummaryAbsent  { font-size: 0.7rem; font-weight: 800; color: #f87171; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #0f1929, #131e30);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  font-family: inherit;
+  z-index: 2000;
+  box-shadow: 0 20px 56px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  animation: toastIn 0.25s cubic-bezier(0.22,1,0.36,1);
+  white-space: nowrap;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.toastIcon {
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+
+.hoursText { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.55); }
+
+/* ── SALARY TAB ── */
+.salaryMonth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.salaryMonthBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.salaryMonthBtn:hover { background: rgba(234,88,12,0.15); color: #f97316; border-color: rgba(234,88,12,0.2); }
+
+.salaryMonthLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 160px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.salaryTotalBanner {
+  background: linear-gradient(135deg, rgba(234,88,12,0.12), rgba(249,115,22,0.06));
+  border: 1px solid rgba(234,88,12,0.2);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.salaryTotalLabel { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.45); margin-bottom: 0.25rem; }
+.salaryTotalVal   { font-size: 1.875rem; font-weight: 800; color: #fff; letter-spacing: -0.04em; line-height: 1; }
+
+.payAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.375rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 14px rgba(16,185,129,0.3);
+  transition: all 0.2s;
+}
+.payAllBtn:hover { box-shadow: 0 8px 22px rgba(16,185,129,0.4); transform: translateY(-1px); }
+
+.salaryTable { width: 100%; border-collapse: collapse; }
+.salaryTable th {
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  white-space: nowrap;
+}
+.salaryTable td {
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.7);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.salaryTable tr:last-child td { border-bottom: none; }
+.salaryTable tbody tr:hover td { background: rgba(255,255,255,0.025); }
+
+.netPay { font-weight: 800; font-size: 0.9375rem; color: #fff; }
+.bonusGreen { color: #34d399; font-weight: 700; }
+.deductionRed { color: #f87171; font-weight: 700; }
+
+.payStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.payStatusPaid    { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.payStatusPending { background: rgba(234,88,12,0.12); color: #fb923c; border: 1px solid rgba(234,88,12,0.2); }
+
+.markPaidBtn {
+  padding: 0.35rem 0.875rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+}
+.markPaidBtn:hover { background: rgba(16,185,129,0.15); color: #34d399; border-color: rgba(16,185,129,0.25); }
+
+/* ── MODAL ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: linear-gradient(145deg, #0c1524, #0f1929);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow:
+    0 32px 80px rgba(0,0,0,0.65),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+  animation: slideUp 0.2s cubic-bezier(0.22,1,0.36,1);
+}
+
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.modalTitle { font-size: 1.125rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+
+.modalClose {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.07);
+  border: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+}
+.modalClose:hover { background: rgba(239,68,68,0.15); color: #f87171; }
+
+.modalBody { padding: 1.5rem 1.75rem; }
+
+.modalFooter {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.25rem 1.75rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  justify-content: flex-end;
+}
+
+.formGroup { margin-bottom: 1.25rem; }
+
+.formLabel {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.formInput {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+.formInput::placeholder { color: rgba(255,255,255,0.2); }
+.formInput:focus {
+  outline: none;
+  border-color: rgba(234,88,12,0.5);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 0 3px rgba(234,88,12,0.1);
+}
+
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.formSelect {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  appearance: none;
+  transition: all 0.2s;
+}
+.formSelect option { background: #1a2235; }
+.formSelect:focus { outline: none; border-color: rgba(234,88,12,0.5); box-shadow: 0 0 0 3px rgba(234,88,12,0.1); }
+
+.modalBtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 14px rgba(234,88,12,0.3);
+  transition: all 0.2s;
+}
+.modalBtnPrimary:hover { box-shadow: 0 8px 22px rgba(234,88,12,0.45); transform: translateY(-1px); }
+
+.modalBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.75rem 1.375rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+.modalBtnSecondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* ── INLINE SALARY EDIT ── */
+.inlineDisplayBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: transparent;
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.inlineDisplayBtn:hover {
+  border-color: rgba(234,88,12,0.5);
+  background: rgba(234,88,12,0.06);
+  color: #fff;
+}
+.inlineDisplayBtn:hover .inlineEditPen { opacity: 1; }
+
+.inlineEditPen {
+  font-size: 0.6rem;
+  opacity: 0.3;
+  transition: opacity 0.15s;
+}
+
+.inlineInput {
+  width: 110px;
+  background: rgba(234,88,12,0.08);
+  border: 1.5px solid rgba(234,88,12,0.5);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(234,88,12,0.12);
+}
+.inlineInput::-webkit-inner-spin-button,
+.inlineInput::-webkit-outer-spin-button { opacity: 0.4; }
+
+/* ── SALARY EDIT HINT ── */
+.salaryEditHint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.375rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.02);
+}
+.salaryEditHintIcon {
+  font-size: 0.875rem;
+  color: rgba(234,88,12,0.6);
+}
+
+/* ── HOURS BAR CHART ── */
+.hoursChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.625rem;
+  height: 120px;
+  padding-top: 0.75rem;
+}
+
+.hoursBarWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  height: 100%;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.hoursBar {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(to top, #ea580c, #f97316);
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+  min-height: 4px;
+}
+.hoursBar:hover { opacity: 1; transform: scaleX(1.05); }
+
+.hoursBarLabel { font-size: 0.625rem; color: rgba(255,255,255,0.3); font-weight: 600; }
+
+/* ── SEARCH BAR ── */
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.3);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+.searchInput::placeholder { color: rgba(255,255,255,0.25); }
+.searchInput:focus { outline: none; border-color: rgba(234,88,12,0.4); background: rgba(255,255,255,0.07); box-shadow: 0 0 0 3px rgba(234,88,12,0.08); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .staffGrid { grid-template-columns: 1fr 1fr; }
+  .formRow   { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .staffGrid { grid-template-columns: 1fr; }
+  .tabRow    { width: 100%; justify-content: center; }
+}

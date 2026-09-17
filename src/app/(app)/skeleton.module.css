@@ -1,0 +1,39 @@
+/* ══════════════════════════════════════════
+   TABLE VALLEY — SKELETON LOADING SYSTEM
+   Shimmer bones for instant loading states
+   ══════════════════════════════════════════ */
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.bone {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.09) 40px,
+    rgba(255, 255, 255, 0.04) 80px
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  display: block;
+}
+
+/* Heights */
+.h4  { height: 1rem; }
+.h5  { height: 1.25rem; }
+.h8  { height: 2rem; }
+.h10 { height: 2.5rem; }
+
+/* Widths */
+.w10 { width: 2.5rem; }
+.w16 { width: 4rem; }
+.w20 { width: 5rem; }
+.w24 { width: 6rem; }
+.w28 { width: 7rem; }
+.w32 { width: 8rem; }
+.w48 { width: 12rem; }
+.w72 { width: 18rem; }
+.wFull { width: 100%; }

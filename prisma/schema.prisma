@@ -1,0 +1,262 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────────────────────
+// 1. Users & Auth Layer
+// ─────────────────────────────────────────────────────────
+model User {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  username  String   @unique
+  password  String
+  role      String   // "ADMIN" or "CASHIER"
+  status    String   @default("ACTIVE") // "ACTIVE" or "INACTIVE"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  
+  orders    Order[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────
+// 2. Catalog & Products
+// ─────────────────────────────────────────────────────────
+model Category {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  sku         String?  @unique
+  price       Float
+  cost        Float    @default(0)
+  stock       Int      @default(0)
+  minStock    Int      @default(0) @map("min_stock")
+  trackStock  Boolean  @default(false) @map("track_stock")
+  available   Boolean  @default(true)
+  imageUrl    String?  @map("image_url")
+  categoryId  String   @map("category_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  orderItems  OrderItem[]
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+// ─────────────────────────────────────────────────────────
+// 3. Sales & POS Operations
+// ─────────────────────────────────────────────────────────
+model Order {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber   String   @unique @map("order_number") // e.g. VT-0001
+  type          String   // "DINE_IN" or "TAKE_AWAY"
+  tableNumber   String?  @map("table_number")
+  status        String   // "PENDING", "PREPARING", "READY", "SERVED", "COMPLETED", "CANCELLED"
+  subtotal      Float
+  tax           Float    @default(0)
+  discount      Float    @default(0)
+  total         Float
+  paymentMethod String?  @map("payment_method") // "CASH", "UPI", "CARD", "OTHER"
+  paymentStatus String   @default("PENDING") @map("payment_status") // "PENDING", "PAID", "REFUNDED"
+  notes         String?
+  cashierId     String   @map("cashier_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  cashier       User     @relation(fields: [cashierId], references: [id], onDelete: Restrict)
+  items         OrderItem[]
+  kot           KOT?
+
+  @@index([createdAt])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId   String   @map("order_id") @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  qty       Int
+  price     Float    // Historical price at the time of order
+  notes     String?
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@unique([orderId, productId], name: "order_items_order_product_unique")
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model KOT {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId   String   @unique @map("order_id") @db.Uuid
+  status    String   @default("PENDING") // "PENDING", "PREPARING", "READY", "SERVED"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("kots")
+}
+
+model DayClosing {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  date         DateTime @unique @default(dbgenerated("CURRENT_DATE")) @db.Date
+  openingCash  Float    @default(0) @map("opening_cash")
+  cashSales    Float    @default(0) @map("cash_sales")
+  upiSales     Float    @default(0) @map("upi_sales")
+  cardSales    Float    @default(0) @map("card_sales")
+  otherSales   Float    @default(0) @map("other_sales")
+  totalSales   Float    @default(0) @map("total_sales")
+  expectedCash Float    @default(0) @map("expected_cash")
+  actualCash   Float    @default(0) @map("actual_cash")
+  difference   Float    @default(0)
+  ordersCount  Int      @default(0) @map("orders_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("day_closings")
+}
+
+// ─────────────────────────────────────────────────────────
+// 4. Staff & HR Management
+// ─────────────────────────────────────────────────────────
+model Staff {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  role          String
+  email         String?
+  phone         String?
+  shift         String
+  status        String       // "On Duty", "Off Duty", "On Leave"
+  baseSalary    Float        @map("base_salary")
+  defaultBonus  Float        @default(0) @map("default_bonus")
+  joinedDate    DateTime     @db.Date @map("joined_date")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @default(now()) @updatedAt @map("updated_at")
+
+  attendances   Attendance[]
+  payrolls      Payroll[]
+
+  @@map("staff")
+}
+
+model Attendance {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  staffId       String    @map("staff_id") @db.Uuid
+  date          DateTime  @db.Date
+  status        String    // "PRESENT", "ABSENT", "HALF", "LEAVE", "HOLIDAY"
+  checkInTime   DateTime? @db.Time @map("check_in_time")
+  checkOutTime  DateTime? @db.Time @map("check_out_time")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  staff         Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, date], name: "attendance_staff_date_unique")
+  @@index([staffId, date])
+  @@map("attendance")
+}
+
+model Payroll {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  staffId         String   @map("staff_id") @db.Uuid
+  month           Int
+  year            Int
+  baseSalary      Float    @map("base_salary")
+  bonus           Float    @default(0)
+  absentDeduction Float    @default(0) @map("absent_deduction")
+  manualDeduction Float    @default(0) @map("manual_deduction")
+  netPay          Float    @map("net_pay")
+  status          String   @default("PENDING") // "PENDING", "PAID"
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  staff           Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, month, year], name: "payrolls_staff_month_year_unique")
+  @@map("payrolls")
+}
+
+// ─────────────────────────────────────────────────────────
+// 5. Inventory Management
+// ─────────────────────────────────────────────────────────
+model InventoryItem {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  category     String
+  emoji        String
+  unit         String
+  unitSize     String?  @map("unit_size")
+  qty          Float
+  minQty       Float    @map("min_qty")
+  costPerUnit  Float    @map("cost_per_unit")
+  supplier     String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  transactions InventoryTransaction[]
+
+  @@map("inventory_items")
+}
+
+model InventoryTransaction {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  itemId          String        @map("item_id") @db.Uuid
+  type            String        // "IN", "OUT"
+  qty             Float
+  notes           String?
+  transactionDate DateTime      @default(now()) @map("transaction_date")
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  item            InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+  @@map("inventory_transactions")
+}
+
+// ─────────────────────────────────────────────────────────
+// 6. System Configuration
+// ─────────────────────────────────────────────────────────
+model Settings {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  restaurantName      String   @default("Table Valley") @map("restaurant_name")
+  phone               String   @map("phone")
+  address             String   @map("address")
+  gstin               String?  @map("gstin")
+  fssaiLicense        String?  @map("fssai_license")
+  taxRate             Float    @default(0) @map("tax_rate")
+  serviceCharge       Float    @default(0) @map("service_charge")
+  currencySymbol      String   @default("₹") @map("currency_symbol")
+  autoPrintKot        Boolean  @default(false) @map("auto_print_kot")
+  autoPrintBill       Boolean  @default(false) @map("auto_print_bill")
+  soundNotifications  Boolean  @default(true) @map("sound_notifications")
+  darkModeSidebar     Boolean  @default(true) @map("dark_mode_sidebar")
+  showItemImages      Boolean  @default(true) @map("show_item_images")
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
