@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { decrypt } from '@/lib/auth';
+import { decrypt } from '@/lib/jwt';
 
 const PROTECTED_ROUTES = ['/dashboard', '/reports', '/settings', '/staff', '/inventory', '/pos', '/orders', '/products', '/sales', '/users', '/day-closing', '/api'];
 
