@@ -56,6 +56,8 @@ function PeakHoursHeatmap({ heatData }: { heatData: number[][] }) {
                   onMouseEnter={() => setHovered({d,h})}
                   onMouseLeave={() => setHovered(null)}
                   style={{
+                    animation: 'fadeUp 0.35s ease-out both',
+                    animationDelay: `${(d * 7 + h) * 0.015}s`,
                     height: '28px',
                     borderRadius: '6px',
                     background: intensity > 0.7
@@ -128,6 +130,10 @@ function BarChart({ labels, values, color = '#ea580c', highlight }: {
             className={dash.barWrap}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
+            style={{
+              animation: 'fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both',
+              animationDelay: `${i * 0.04}s`,
+            }}
           >
             {hovered === i && (
               <div className={dash.tooltip}>

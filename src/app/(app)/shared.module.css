@@ -204,14 +204,13 @@
 }
 
 .statCard:hover {
-  transform: translateY(-7px) scale(1.008);
+  transform: translateY(-4px) scale(1.01);
   border-color: var(--border-subtle);
   background: var(--surface-sec);
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.06) inset,
-    0 4px 12px rgba(0,0,0,0.2),
-    0 16px 40px rgba(0,0,0,0.4),
-    0 32px 64px rgba(0,0,0,0.3);
+    0 12px 30px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(249,115,22, 0.3) inset;
 }
 
 .statCard:hover::after { opacity: 1; transform: scale(1.5); }
