@@ -7,6 +7,8 @@ import { MagneticButton } from '@/components/MagneticButton';
 import { useToast } from '@/contexts/ToastContext';
 import styles from '../shared.module.css';
 import s from './inventory.module.css';
+import { useRouter } from 'next/navigation';
+import { saveInventoryItem, deleteInventoryItem, adjustInventoryQuantity } from '@/app/actions/inventoryActions';
 
 export interface InventoryItem {
   id: string;
@@ -362,6 +364,12 @@ function DeleteModal({ item, onClose, onDelete }: { item: InventoryItem; onClose
 export default function InventoryClient({ initialItems, initialTransactions }: { initialItems: InventoryItem[], initialTransactions: Transaction[] }) {
   const [items, setItems]   = useState<InventoryItem[]>(initialItems);
   const [txns, setTxns]     = useState<Transaction[]>(initialTransactions);
+  const router = useRouter();
+
+
+  useEffect(() => setItems(initialItems), [initialItems]);
+  useEffect(() => setTxns(initialTransactions), [initialTransactions]);
+
   const [view, setView]     = useState<'grid'|'list'>('grid');
   const [cat, setCat]       = useState('All');
   const [search, setSearch] = useState('');
@@ -398,32 +406,68 @@ export default function InventoryClient({ initialItems, initialTransactions }: {
   const maxQty   = Math.max(...topItems.map(i => i.qty), 1);
 
   /* handlers */
-  const handleSaveItem = (data: Partial<InventoryItem>) => {
-    if (editItem) {
-      setItems(prev => prev.map(i => i.id===editItem.id ? {...i,...data} : i));
-      showToast(`${data.name} updated`);
-    } else {
-      setItems(prev => [...prev, {id:crypto.randomUUID(),name:'',category:'Food',emoji:'📦',unit:'kg',unitSize:'',qty:0,minQty:5,costPerUnit:0,supplier:'',...data}]);
-      showToast(`${data.name} added to inventory`);
+  const handleSaveItem = async (data: Partial<InventoryItem>) => {
+    console.log("[INVENTORY] Saving item:", data);
+    try {
+      const res = await saveInventoryItem(editItem?.id, data);
+      console.log("[INVENTORY] Save response:", res);
+      if (res.success) {
+        if (editItem) {
+          setItems(prev => prev.map(i => i.id===editItem.id ? {...i,...data} : i));
+          showToast(`${data.name} updated`);
+        } else {
+          setItems(prev => [...prev, { ...data, id: res.item?.id ?? crypto.randomUUID() } as InventoryItem]);
+          showToast(`${data.name} added to inventory`);
+        }
+        router.refresh();
+      } else {
+        console.error("[INVENTORY] Save failed:", res.error);
+        showToast('Error: ' + res.error);
+      }
+    } catch (e: any) {
+      console.error("[INVENTORY] Exception saving:", e);
+      showToast('Error saving item: ' + e.message);
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     const item = items.find(i => i.id===id)!;
-    setItems(prev => prev.filter(i => i.id!==id));
-    showToast(`${item.name} removed from inventory`);
+    try {
+      const res = await deleteInventoryItem(id);
+      if (res.success) {
+        setItems(prev => prev.filter(i => i.id!==id));
+        showToast(`${item.name} removed from inventory`);
+        router.refresh();
+      } else {
+        showToast('Error deleting: ' + res.error);
+      }
+    } catch (e: any) {
+      console.error("[INVENTORY] Delete error:", e);
+      showToast('Error deleting item: ' + e.message);
+    }
   };
 
-  const handleAdjust = (id: string, newQty: number, type: 'IN'|'OUT', notes: string) => {
+  const handleAdjust = async (id: string, newQty: number, type: 'IN'|'OUT', notes: string) => {
     const item = items.find(i => i.id===id)!;
     const delta = Math.abs(newQty - item.qty);
-    setItems(prev => prev.map(i => i.id===id ? {...i, qty: newQty} : i));
-    setTxns(prev => [{
-      id: crypto.randomUUID(), itemName: item.name, type, qty: delta,
-      unit: item.unit, notes,
-      date: new Date().toLocaleString('en-IN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
-    },...prev]);
-    showToast(`${item.name}: ${type==='IN'?'+':'−'}${delta} ${item.unit} recorded`);
+    try {
+      const res = await adjustInventoryQuantity(id, newQty, type, delta, notes);
+      if (res.success) {
+        setItems(prev => prev.map(i => i.id===id ? {...i, qty: newQty} : i));
+        setTxns(prev => [{
+          id: crypto.randomUUID(), itemName: item.name, type, qty: delta,
+          unit: item.unit, notes,
+          date: new Date().toLocaleString('en-IN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+        },...prev]);
+        showToast(`${item.name}: ${type==='IN'?'+':'−'}${delta} ${item.unit} recorded`);
+        router.refresh();
+      } else {
+        showToast('Error adjusting: ' + res.error);
+      }
+    } catch (e: any) {
+      console.error("[INVENTORY] Adjust error:", e);
+      showToast('Error adjusting quantity: ' + e.message);
+    }
   };
 
   const filteredTxns = txnFilter==='ALL' ? txns : txns.filter(t => t.type===txnFilter);
