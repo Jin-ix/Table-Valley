@@ -18,11 +18,16 @@ export default function AdminLogin() {
     setError(null);
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
-      const res = await login(formData);
-      if (res?.error) {
-        setError(res.error);
-      } else if (res?.success) {
-        router.push('/dashboard');
+      try {
+        const res = await login(formData);
+        if (res?.error) {
+          setError(res.error);
+        } else if (res?.success) {
+          router.push('/dashboard');
+        }
+      } catch (err: any) {
+        console.error('Login action failed:', err);
+        setError('Network error: ' + (err.message || 'Failed to reach server.'));
       }
     });
   };
